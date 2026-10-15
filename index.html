@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MC² Summit Hackathon: challenge review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --green:#062b23; --teal:#1f8a7a; --gold:#c9a24b; --gold-soft:#f1e3bb;
+  --bg:#f7f5ef; --surface:#ffffff; --ink:#15211e; --ink-2:#4b5a56; --line:#d9d6cc; --line-2:#ece9df;
+  --seed:#1f8a7a; --open:#b07d1c; --sel:#fff7df;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#071d18; --surface:#0c2a23; --ink:#eef0ea; --ink-2:#a9b8b2; --line:#1e3f37; --line-2:#163229;
+  --gold-soft:#3a3015; --sel:#2b2a14; --teal:#4cc3b0; --open:#e0b35a; --seed:#4cc3b0; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#071d18; --surface:#0c2a23; --ink:#eef0ea; --ink-2:#a9b8b2; --line:#1e3f37; --line-2:#163229;
+  --gold-soft:#3a3015; --sel:#2b2a14; --teal:#4cc3b0; --open:#e0b35a; --seed:#4cc3b0; color-scheme:dark; }
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px);height:100%}
+*{box-sizing:inherit;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;height:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--green)}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+button{font:inherit;cursor:pointer;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 18px}
+
+.hero{background:var(--green);color:#f3efe3;padding:34px 0 26px}
+.hero .wrap{position:relative}
+.stars{position:absolute;right:14px;top:-6px;width:64px;opacity:.9}
+.hero h1{font-size:clamp(26px,7vw,40px);font-weight:700;color:#fff;max-width:14ch}
+.hero p{margin-top:12px;font-size:15px;color:#d5d9cf;max-width:52ch}
+.hero .meta{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--gold)}
+
+/* navigation: bottom bar on mobile, left rail on desktop */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav .inner{display:flex;max-width:720px;margin:0 auto}
+.tab{flex:1 1 0;background:none;border:0;border-top:3px solid transparent;padding:10px 4px 9px;font-weight:600;font-size:12.5px;color:var(--ink-2);white-space:nowrap;min-height:52px}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--gold)}
+.tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.nav .side-list{display:none}
+.panel{display:none;padding:26px 0 150px}
+.panel.on{display:block}
+.panel h2{font-size:26px;margin-bottom:8px}
+.lede{color:var(--ink-2);font-size:15px;max-width:60ch;margin-bottom:18px}
+.lede strong{color:var(--ink)}
+.ask{border:1px solid var(--gold);background:var(--gold-soft);border-radius:8px;padding:14px 16px;margin:0 0 20px;font-size:14.5px}
+.ask ol{margin:6px 0 0 18px;padding:0}.ask li{margin:3px 0}
+
+.group{margin:0 0 26px}
+.group-head{border-bottom:2px solid var(--green);padding-bottom:6px;margin-bottom:10px}
+.group-head h3{font-size:21px}
+.group-head p{font-size:14px;color:var(--ink-2);margin:2px 0 0;max-width:60ch}
+.prize-line{font-size:13px;color:var(--ink-2);margin-top:6px}
+.notebox{width:100%;margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;min-height:64px;resize:vertical}
+.notebox:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--ink-2);margin:0 0 10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px}
+.legend i.seed{background:var(--seed);border-radius:2px}.legend i.open{background:var(--open);border-radius:50%}
+.row .k{font-size:12px;font-weight:700;color:var(--ink-2);margin-top:4px}
+
+.prob{background:var(--surface);border:1px solid var(--line-2);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;padding:14px 14px;width:100%;background:none;border:0;text-align:left}
+.row:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.kind{width:12px;height:12px;border-radius:2px;margin-top:6px}
+.kind.seed{background:var(--seed)} .kind.open{background:var(--open);border-radius:50%}
+.row .t{font-weight:700;font-size:16.5px}
+.row .s{color:var(--ink-2);font-size:14px;margin-top:3px}
+.row .alt-tag{display:inline-block;font-size:11.5px;font-weight:700;color:var(--open);margin-left:6px;vertical-align:1px}
+.detail{display:none;padding:0 14px 14px;font-size:14.5px;border-top:1px solid var(--line-2)}
+.prob.open-d .detail{display:block}
+.detail dt{color:var(--ink-2);font-weight:600;font-size:13px;margin-top:12px}
+.detail dd{margin-top:2px}
+.detail dd ul{margin:0;padding-left:18px}
+.pick{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--bg);padding:10px 16px;border-radius:8px;font-weight:700;font-size:14.5px;margin-top:14px;min-height:44px}
+.pick[aria-pressed="true"]{background:var(--sel);border-color:var(--gold)}
+.pick:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.shortlist{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 62px);z-index:6;background:var(--green);color:#f3efe3;border-radius:12px;padding:10px 14px;display:none;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(6,43,35,.3);max-width:696px;margin:0 auto}
+.shortlist.on{display:flex}
+.shortlist .n{font-family:Fraunces,serif;font-size:22px;color:var(--gold);min-width:2.2ch}
+.shortlist .txt{flex:1;font-size:13.5px}
+.shortlist button{background:var(--gold);color:var(--green);border:0;padding:10px 12px;border-radius:8px;font-weight:700;font-size:14px;min-height:40px}
+.shortlist button.ghost{background:transparent;color:#f3efe3;border:1px solid rgba(255,255,255,.35)}
+.shortlist .ok{position:absolute;top:-28px;left:14px;font-size:13px;color:var(--ink)}
+
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{text-align:left;padding:9px 8px 9px 0;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{color:var(--ink-2);font-weight:600;font-size:13px}
+td:first-child{font-weight:600}
+.scroll{overflow-x:auto}
+.note{font-size:14px;color:var(--ink-2);max-width:60ch;margin-top:12px}
+.block{margin-bottom:28px}
+.block h3{font-size:19px;margin-bottom:8px}
+.block ul{padding-left:18px;font-size:15px}
+.block li{margin:6px 0}
+.block li b{font-weight:700}
+.ws{background:var(--surface);border:1px solid var(--line-2);border-radius:10px;padding:14px;margin-bottom:10px}
+.ws .what{font-weight:700;font-size:16px}
+.ws p{font-size:14.5px;color:var(--ink-2);margin-top:4px}
+details.cap{background:var(--surface);border:1px solid var(--line-2);border-radius:10px;margin-bottom:10px}
+details.cap summary{padding:13px 14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px}
+details.cap summary::-webkit-details-marker{display:none}
+details.cap summary::after{content:"+";font-size:22px;line-height:1;color:var(--ink-2);flex:0 0 auto}
+details.cap[open] summary::after{content:"\2013"}
+details.cap summary:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;border-radius:10px}
+details.cap summary b{display:block;font-size:16px}
+details.cap summary span{display:block;font-size:13.5px;color:var(--ink-2);margin-top:2px}
+details.cap ul{padding:0 14px 14px 32px;font-size:14.5px;margin:0}
+details.cap li{margin:7px 0}
+.phases{padding-left:22px;font-size:14.5px;margin:0 0 22px}
+.phases li{margin:6px 0}
+.phases b{font-weight:700}
+footer{color:var(--ink-2);font-size:13px;padding:10px 0 0}
+
+@media (min-width:900px){
+  body{display:grid;grid-template-columns:220px 1fr}
+  .nav{position:sticky;top:env(safe-area-inset-top,0px);bottom:auto;left:auto;right:auto;align-self:start;height:100vh;border-top:0;border-right:1px solid var(--line);padding:28px 16px 0}
+  .nav .inner{display:block;max-width:none}
+  .tab{display:block;width:100%;text-align:left;border-top:0;border-left:3px solid transparent;padding:10px 12px;font-size:15px;min-height:0;border-radius:0 6px 6px 0}
+  .tab[aria-selected="true"]{background:var(--sel)}
+  .main-col{min-width:0}
+  .wrap{max-width:760px;padding:0 40px}
+  .panel{padding:40px 0 60px}
+  .shortlist{position:static;margin:28px 0 0;max-width:none;box-shadow:none;flex-wrap:wrap}
+  .shortlist .ok{position:static;color:var(--gold);width:100%;order:9}
+  .nav .side-list{display:block;margin-top:22px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" role="tablist" aria-label="Sections"><div class="inner">
+  <button class="tab" role="tab" data-p="problems" aria-selected="true">Challenges</button>
+  <button class="tab" role="tab" data-p="prizes" aria-selected="false">Prizes</button>
+  <button class="tab" role="tab" data-p="workshops" aria-selected="false">Workshops</button>
+  <button class="tab" role="tab" data-p="platform" aria-selected="false">Platform</button>
+  <button class="tab" role="tab" data-p="decide" aria-selected="false">Decisions</button>
+</div><div class="side-list" id="sideSlot"></div></nav>
+
+<div class="main-col">
+<header class="hero"><div class="wrap">
+  <svg class="stars" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#c9a24b" stroke-width="3"><polygon points="50,6 58,34 86,34 63,51 72,79 50,62 28,79 37,51 14,34 42,34"/></g><g fill="none" stroke="#4cc3b0" stroke-width="3" opacity=".8"><polygon points="50,22 56,42 76,42 60,54 66,74 50,62 34,74 40,54 24,42 44,42"/></g></svg>
+  <h1>Hackathon review</h1>
+  <p>Challenge statements for the MC² Princeton Summit hackathon, Oct 24–25, drafted in the style of a Devpost prize page. Read, mark what you'd keep, leave a note, then paste your list into the WhatsApp thread.</p>
+  <div class="meta"><span>30–40 participants</span><span>8–13 teams of 1–4</span><span>Demos Sunday afternoon</span></div>
+</div></header>
+
+<main class="wrap">
+
+<section class="panel on" id="p-problems" role="tabpanel">
+  <h2>Thirteen challenges</h2>
+  <p class="lede">Every submitted project competes for the open challenges; nobody has to nominate. For the pitched challenges we hand teams the problem and they build the answer; a team picks up to three on the submission form. Any topic, any community: a Muslim-community angle is welcome where the challenge asks for one and never required where it doesn't.</p>
+  <div class="ask"><b>How to review</b>
+    <ol><li>Tap a challenge to read what wins it.</li><li>Tap <em>Keep</em> on the ones you'd run; write a note if you'd change the wording, the scope or the name.</li><li><em>Copy my list</em>, then paste it in WhatsApp. Nothing leaves your phone.</li></ol>
+  </div>
+  <div class="legend"><span><i class="open"></i>Open: any project is eligible</span><span><i class="seed"></i>Pitched: we set the problem</span></div>
+  <div id="tracks"></div>
+</section>
+
+<section class="panel" id="p-prizes" role="tabpanel">
+  <h2>Prizes</h2>
+  <p class="lede">Parked until the challenge list is settled. Working assumptions, open to change:</p>
+  <div class="block"><ul>
+    <li>Each challenge carries its own prize, the way a Devpost prize page reads.</li>
+    <li>Gift cards per team member rather than hardware; teams are one to four people and a monitor can't be split.</li>
+    <li>"Most Likely to Become a Venture" carries the MC² Accelerator slot: desk time, a mentor, a follow-up demo day.</li>
+    <li>Budget to be set by the committee once the number of challenges is fixed.</li>
+  </ul></div>
+</section>
+
+<section class="panel" id="p-workshops" role="tabpanel">
+  <h2>Workshops</h2>
+  <p class="lede">Most high-school teams have never used git, and submissions require a public repo. Short, practical sessions so every team arrives at the deadline with a repo and a submission.</p>
+  <div class="ws"><div class="what">Git and GitHub from zero</div><p>Create an account, make a repo, commit, push, share the link. The only goal is that every team can publish their own code.</p></div>
+  <div class="ws"><div class="what">Submission walkthrough</div><p>A tour of the submission form: team, project, story, repo link, screenshots, categories. Draft early, polish later.</p></div>
+  <div class="ws"><div class="what">Pitching in five minutes</div><p>Problem, who it helps, demo, what's next. Practice once in front of a mentor before the real room.</p></div>
+  <div class="ws"><div class="what">Building with AI tools</div><p>AI tools are fully allowed. How to use them to move faster without shipping something you can't explain to a judge.</p></div>
+  <div class="ws"><div class="what">Help in the room</div><p>Organizers and mentors assist any team stuck on git or the form; a missed deadline because of tooling is on us, not them.</p></div>
+</section>
+
+<section class="panel" id="p-platform" role="tabpanel">
+  <h2>Platform</h2>
+  <p class="lede">One web app runs the whole hackathon: information, submissions, live judging and awards. It's hosted on Railway for roughly $10–30 in total. Tap a section to see what each person can do.</p>
+
+  <div class="block"><h3>How the weekend moves through the app</h3>
+  <ol class="phases">
+    <li><b>Before the event.</b> Info pages are live; submissions are closed.</li>
+    <li><b>Submissions open</b> at Saturday kickoff. Teams draft, edit and submit.</li>
+    <li><b>Submissions close</b> about an hour before pitches, automatically, even if nobody clicks. The gallery and pitch order appear.</li>
+    <li><b>Judging.</b> Teams pitch in random order; judges score on their phones.</li>
+    <li><b>Deliberation.</b> Judges see the combined results and decide the awards.</li>
+    <li><b>Winners announced.</b> Badges appear in the gallery and on the Prizes page.</li>
+  </ol></div>
+
+  <details class="cap" open><summary><div><b>Participants</b><span>No accounts. A QR code and an event code get them in.</span></div></summary><ul>
+    <li>Scan the QR code in the room and enter the event code. No sign-up, no password.</li>
+    <li>Read the challenges, prizes, rules, schedule, judges, resources and announcements on their phones.</li>
+    <li>One submission per team in Devpost format: team and members, project name, one-line tagline, story (including a "Who we talked to" section), tools used, repo link, demo and video links, up to five screenshots.</li>
+    <li>Opt in to up to three pitched challenges and tick a box if the project includes hardware. Every project is automatically considered for all nine open challenges.</li>
+    <li>Save as a draft, submit, and keep editing until the deadline. A private edit link lets any teammate make changes; organizers can reissue a lost link.</li>
+    <li>After the deadline, browse every team's project in the gallery, filtered by challenge or hardware. Winners show a badge.</li>
+  </ul></details>
+
+  <details class="cap"><summary><div><b>Judges</b><span>Score each pitch on a phone as it happens.</span></div></summary><ul>
+    <li>Log in with their email and a password the organizers hand over.</li>
+    <li>The screen jumps to the team on stage when the MC moves to the next pitch. A manual picker is there as a backup.</li>
+    <li>See the project summary, links, screenshots, pitched challenges and hardware badge.</li>
+    <li>Score five criteria from 0 to 10, each with a short guide: technicality, originality, practicality, aesthetics, wow factor. Add private notes. Everything saves as they go.</li>
+    <li>Finalize each team when done, or skip a team they have a conflict with.</li>
+    <li>See only their own scores until deliberation, so no judge is swayed by another.</li>
+  </ul></details>
+
+  <details class="cap"><summary><div><b>MC on the floor</b><span>Runs the pitch order from a phone.</span></div></summary><ul>
+    <li>Shuffle the pitch order and adjust it if a team needs to move.</li>
+    <li>Tap "now pitching" to move every judge's screen to the next team.</li>
+    <li>Cannot see scores, results or anyone's contact details.</li>
+  </ul></details>
+
+  <details class="cap"><summary><div><b>Deliberation and awards</b><span>The app ranks; the judges decide.</span></div></summary><ul>
+    <li>Scores are adjusted per judge so a strict judge and a generous judge count equally.</li>
+    <li>An overall leaderboard, plus a shortlist for every challenge sorted by what that award is about: Most Technically Complex by technicality, Most Innovative by originality, Ihsan by aesthetics, Most Impactful by practicality.</li>
+    <li>The hardware shortlist shows only hardware projects; pitched-challenge shortlists show the teams that opted in. A challenge with one entrant can still be awarded.</li>
+    <li>Judges' private notes are visible to the whole panel during deliberation.</li>
+    <li>Shared places are allowed. A setting controls whether one team can win several awards: allow, warn (default) or block. The venture award doesn't count toward the limit.</li>
+    <li>Publishing the winners adds badges in the gallery and updates the Prizes page.</li>
+  </ul></details>
+
+  <details class="cap"><summary><div><b>Organizers</b><span>Everything else, from one admin area.</span></div></summary><ul>
+    <li>Move the event between phases; set the open and close times.</li>
+    <li>Post announcements and edit challenge wording.</li>
+    <li>Add judges, MCs and admins; generate and reset their passwords; disable an account.</li>
+    <li>See every submission with contact details; edit or delete entries; reissue edit links; give one team a few extra minutes past the deadline.</li>
+    <li>Watch a grid of which judge has scored which team.</li>
+    <li>Rotate the event code if it leaks, and print the QR code.</li>
+    <li>Export submissions, contacts, scores and results to a spreadsheet; erase contact details after prize follow-up.</li>
+  </ul></details>
+
+  <details class="cap"><summary><div><b>Trust and privacy</b><span>Fair results, protected data.</span></div></summary><ul>
+    <li>The deadline is enforced twice, by the app and by the database, so nothing slips in late.</li>
+    <li>Emails and Discord handles are visible to organizers only, never in the gallery or judge screens.</li>
+    <li>Screenshots are checked, resized and stripped of location data, then stored privately.</li>
+    <li>Daily backups during the event week, plus an export right after the deadline and after awards.</li>
+  </ul></details>
+  <div class="block"><h3>Pitching: one room, every judge sees every pitch</h3><ul>
+    <li><b>Fair comparison.</b> Every score comes from the same judges watching the same field. With two rooms, each judge sees half the teams, and a team in the stronger room scores lower against tougher company. Score normalization can't fix that, because no judge saw both halves.</li>
+    <li><b>Open awards need full coverage.</b> Nine of the thirteen challenges are decided across every project. Judges can only argue those out if they all saw every pitch.</li>
+    <li><b>Teams watch each other.</b> For first-time hackers, seeing everyone else's project is a big part of what brings them back.</li>
+    <li><b>One of everything.</b> One MC, one screen, one Wi-Fi zone, one schedule.</li>
+    <li><b>The cost is time.</b> Ten-minute slots for 8 to 13 teams is 80 to 130 minutes. The MC keeps it moving on the floor by trimming Q&amp;A when needed; judges score during changeover.</li>
+  </ul></div>
+  <div class="block"><h3>Left out</h3><ul>
+    <li>Google sign-in for judges; admin-generated passwords instead</li>
+    <li>Registration, which stays on the Summit's existing page</li>
+    <li>Emails from the app; announcements and the event chat carry updates</li>
+    <li>Video uploads; teams share YouTube, Loom or Drive links</li>
+    <li>Audience voting and certificates</li>
+  </ul></div>
+  <div class="block"><h3>Timeline and fallback</h3><ul>
+    <li>Fallback first: a Google Form for submissions and a printed scoring sheet per judge, ready before any code.</li>
+    <li>App complete Oct 20, dry run with helpers on their phones Oct 21–22, content frozen Oct 23.</li>
+  </ul></div>
+</section>
+
+<section class="panel" id="p-decide" role="tabpanel">
+  <h2>What we need to decide</h2>
+  <div class="block"><ul>
+    <li>Which challenges run, their names and wording, and the open-to-pitched ratio.</li>
+    <li>Whether a team can win more than one award, or each team takes at most one so recognition spreads across the room.</li>
+    <li>Whether MC² Labs supplies any components for the Hardware Hack, or teams bring their own.</li>
+    <li>Prize budget, and whether MC² commits an Accelerator slot for the grand prize.</li>
+    <li>Who runs the git and pitching workshops and who helps in the room.</li>
+    <li>Six judges confirmed by name, and one coordinator who is not a judge.</li>
+    <li>Whether younger Summit divisions can enter the hackathon section; every problem has a simpler version if so.</li>
+  </ul></div>
+  <footer>Prepared for the MC² Summit hackathon committee. Your Keep list stays on this device.</footer>
+</section>
+
+</main>
+</div>
+
+<div class="shortlist" id="shortlist">
+  <span class="ok" id="ok" aria-live="polite"></span>
+  <span class="n" id="count">0</span><span class="txt" id="counttxt">of 10 kept</span>
+  <button type="button" id="copy">Copy my list</button>
+  <button type="button" class="ghost" id="clear">Clear</button>
+</div>
+
+<script>
+const GROUPS=[
+ {id:"open",name:"Open challenges",intro:"Every submitted project is considered. Judges decide these in deliberation from the full gallery.",items:[
+  {id:"grand",kind:"open",title:"Grand Prize",tagline:"The best thing built this weekend.",
+   wins:"The project that works, matters and was explained well: strong on every rubric criterion rather than spectacular on one. The team that pushed furthest in two days.",
+   eligible:"Every submitted project. No nomination.",
+   examples:[]},
+  {id:"runnerup",kind:"open",title:"2nd and 3rd Place",tagline:"The next two strongest projects overall.",
+   wins:"Judged the same way as the Grand Prize: it works, it matters, and the team explained it well. Shared places are allowed when the panel can't separate two teams.",
+   eligible:"Every submitted project. No nomination.",
+   examples:[]},
+  {id:"impact",kind:"open",title:"Most Impactful Hack",tagline:"The project most likely to improve real lives.",
+   wins:"A clear answer to who it helps and how it plausibly reaches them. Health, education, access, relief, civic life, community: any of these. Judges weigh the size of the problem and the credibility of the path, not the polish.",
+   eligible:"Every submitted project. No nomination.",
+   examples:["Live captions or translation so elders and newcomers follow a sermon, a clinic visit or a school meeting","A community needs board for rides, meals and volunteer shifts","Food rescue from events and restaurants to people who need it tonight","Keeping an older relative connected: who calls, who visits, who drives this week"]},
+  {id:"innovative",kind:"open",title:"Most Innovative Hack",tagline:"Something genuinely new.",
+   wins:"Originality of the idea or the approach: a problem nobody thought to solve, a new combination of existing tools, or a familiar problem attacked from an angle nobody tried. Does it make a judge want to tell someone about it?",
+   eligible:"Every submitted project. No nomination.",
+   examples:[]},
+  {id:"technical",kind:"open",title:"Most Technically Complex Hack",tagline:"The hardest engineering problem, solved well.",
+   wins:"Real depth under the hood: algorithms, data, models, systems or infrastructure that took skill to build, and that work in the demo. Ambition that doesn't run doesn't count; a hard thing done cleanly beats a harder thing half done.",
+   eligible:"Every submitted project. No nomination.",
+   examples:[]},
+  {id:"hardware",kind:"open",title:"Best Hardware Hack",tagline:"Make something physical work.",
+   wins:"Excellence in physical computing: robots, sensors, microcontrollers, wearables, embedded systems, anything that moves or measures the real world. Judged on what the hardware does that software alone couldn't, and on whether it works in front of the judges.",
+   eligible:"Every submitted project with a physical component. No nomination.",
+   examples:["An assistive device for someone with limited mobility","A small robot that sorts, carries or measures something","A sensor network that tells a building when a room is full, too hot or too loud","A wearable that nudges posture, focus or hydration"]},
+  {id:"insight",kind:"open",title:"Best User Insight",tagline:"The team that learned the most from real people.",
+   wins:"Who did you talk to, what did they tell you, and what did you change because of it? Evidence over assertion: numbers, quotes, a feature cut or added after a conversation. The Summit is full of potential users; this prize goes to the team that used them.",
+   eligible:"Every submitted project. No nomination; the evidence belongs in the pitch and the project story.",
+   examples:["Interview five people at lunch and change the plan before writing code","Test a paper prototype on a mentor, then rebuild it","Show before-and-after screens with the feedback that caused the change"]},
+  {id:"ihsan",kind:"open",title:"Ihsan Award",tagline:"Doing the work beautifully, with care.",
+   wins:"Craft. The project built with the most attention: a clear interface, thoughtful details, something a stranger could use without help. Scored on the rubric's design criterion.",
+   eligible:"Every submitted project. No nomination.",
+   examples:[]},
+  {id:"venture",kind:"open",title:"Most Likely to Become a Venture",tagline:"The team that should keep going after Sunday.",
+   wins:"A real problem, evidence someone wants it solved, a team that would commit. Judges ask whether this could be a product, a nonprofit or a tool a community actually runs, and whether MC² should back it.",
+   eligible:"Every submitted project. No nomination. The prize is an MC² Accelerator slot: desk time at MC² Works + Labs, a mentor from the speaker list, a follow-up demo day.",
+   examples:[]}
+ ]},
+ {id:"pitched",name:"Pitched challenges",intro:"We set the problem; the team builds the answer. A team selects up to three of these on the submission form and must address them in the pitch.",items:[
+  {id:"masjid-app",kind:"seed",title:"The Masjid App Challenge",tagline:"A mobile app for MCGP that any masjid could run.",
+   wins:"Events, prayer times, announcements and RSVPs for the Muslim Center of Greater Princeton. No API exists, so mock the data, but make the masjid a configuration file (name, colors, feed) so the same app runs for any masjid without touching code. Winner is the one MC² would actually ship.",
+   eligible:"Self-nominated. Mobile or mobile-web.",
+   examples:["Push reminders for events and iftar sign-ups","A volunteer shift board","A donation link that works"]},
+  {id:"quran",kind:"seed",title:"The Quran Learning Challenge",tagline:"Make Quranic Arabic or memorization stick.",
+   wins:"The mechanics that make Duolingo work, applied to the Quran: short daily lessons, streaks, spaced repetition, instant feedback. Scope it small (one surah, the 100 most frequent words, one tajweed rule) and make the loop addictive in a good way.",
+   eligible:"Self-nominated. Any age group, any platform.",
+   examples:["Tajweed feedback from the microphone","A parent or teacher view of progress","Class leaderboards for a weekend school"]},
+  {id:"attention",kind:"seed",title:"The Attention Challenge",tagline:"An antidote to doomscrolling.",
+   wins:"Something that interrupts the loop with something better and measures something honest about the time it gives back. Works on the phone people already own; no operating-system magic. Judges are suspicious of anything that just adds another app to scroll.",
+   eligible:"Self-nominated.",
+   examples:["A pause that offers a reading, a dhikr or a friend check-in","Friends who hold each other to a daily limit","A focus mode for exams or Ramadan"]},
+  {id:"learning-gap",kind:"seed",title:"The Learning Gap Challenge",tagline:"Help a kid who is behind catch up without a tutor.",
+   wins:"One skill (fractions, phonics, English conversation), one learner, instant feedback, a progress view a parent can read in ten seconds. An AI tutor is fine if it explains rather than answers. Built for a family that cannot pay for tutoring.",
+   eligible:"Self-nominated. Any subject, any age.",
+   examples:["Adaptive practice that gets harder as the learner improves","Offline packs for a phone with no data plan","A teacher dashboard across a class"]}
+ ]}
+];
+
+const KEY="mc2-hack-keep", NKEY="mc2-hack-notes"; let kept=new Set(), notes={};
+try{ const s=localStorage.getItem(KEY); if(s) kept=new Set(JSON.parse(s)); const n=localStorage.getItem(NKEY); if(n) notes=JSON.parse(n)||{}; }catch(e){}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify([...kept])); localStorage.setItem(NKEY,JSON.stringify(notes)); }catch(e){} }
+const root=document.getElementById("tracks");
+for(const g of GROUPS){
+  const div=document.createElement("div"); div.className="group";
+  div.innerHTML=`<div class="group-head"><h3>${g.name}</h3><p>${g.intro}</p></div>`;
+  for(const p of g.items){
+    const el=document.createElement("div"); el.className="prob"; el.dataset.id=p.id;
+    el.innerHTML=`<button type="button" class="row" aria-expanded="false">
+        <span class="kind ${p.kind}" aria-hidden="true"></span>
+        <span><span class="t">${p.title}</span><div class="s">${p.tagline}</div></span>
+      </button>
+      <div class="detail"><dl>
+        <dt>What wins it</dt><dd>${p.wins}</dd>
+        <dt>Who is eligible</dt><dd>${p.eligible}</dd>
+        ${p.examples.length?`<dt>${p.kind==="open"?"Example directions":"Stretch ideas"}</dt><dd><ul>${p.examples.map(b=>`<li>${b}</li>`).join("")}</ul></dd>`:""}
+      </dl>
+      <div class="actions"><button type="button" class="pick" aria-pressed="false">Keep</button></div>
+      <textarea class="notebox" placeholder="Your note: rename it, reword it, drop it, merge it…" aria-label="Note on ${p.title}"></textarea></div>`;
+    const row=el.querySelector(".row");
+    row.addEventListener("click",()=>{ const o=el.classList.toggle("open-d"); row.setAttribute("aria-expanded",o); });
+    el.querySelector(".pick").addEventListener("click",()=>{ kept.has(p.id)?kept.delete(p.id):kept.add(p.id); save(); render(); });
+    const ta=el.querySelector(".notebox"); ta.value=notes[p.id]||"";
+    ta.addEventListener("input",()=>{ notes[p.id]=ta.value; save(); });
+    div.appendChild(el);
+  }
+  root.appendChild(div);
+}
+const ALL=GROUPS.flatMap(g=>g.items);
+/* tabs */
+const tabs=[...document.querySelectorAll(".tab")], panels=[...document.querySelectorAll(".panel")];
+function showPanel(id){
+  tabs.forEach(t=>t.setAttribute("aria-selected",t.dataset.p===id));
+  panels.forEach(p=>p.classList.toggle("on",p.id==="p-"+id));
+  document.getElementById("shortlist").classList.toggle("on",id==="problems");
+  window.scrollTo({top:0,behavior:"auto"});
+  try{ location.hash=id; }catch(e){}
+}
+tabs.forEach(t=>t.addEventListener("click",()=>showPanel(t.dataset.p)));
+
+/* on desktop the Keep bar lives in the left rail */
+const mq=window.matchMedia("(min-width:900px)");
+function placeBar(){ const bar=document.getElementById("shortlist"); (mq.matches?document.getElementById("sideSlot"):document.body).appendChild(bar); }
+mq.addEventListener?mq.addEventListener("change",placeBar):mq.addListener(placeBar); placeBar();
+function render(){
+  for(const el of document.querySelectorAll(".prob")){ const on=kept.has(el.dataset.id); const b=el.querySelector(".pick"); b.setAttribute("aria-pressed",on); b.textContent=on?"Kept":"Keep"; }
+  document.getElementById("count").textContent=kept.size;
+  document.getElementById("counttxt").textContent=`of ${ALL.length} kept`;
+}
+document.getElementById("copy").addEventListener("click",async()=>{
+  const lines=["Challenges I'd keep:"]; let i=1;
+  for(const p of ALL) if(kept.has(p.id)) lines.push(`${i++}. ${p.title}`);
+  if(i===1) lines.push("(none yet)");
+  const dropped=ALL.filter(p=>!kept.has(p.id)).map(p=>p.title);
+  if(dropped.length&&i>1) lines.push("","Not keeping: "+dropped.join(", "));
+  const withNotes=ALL.filter(p=>(notes[p.id]||"").trim());
+  if(withNotes.length){ lines.push("","Notes:"); for(const p of withNotes) lines.push(`- ${p.title}: ${notes[p.id].trim()}`); }
+  const text=lines.join("\n"), ok=document.getElementById("ok");
+  try{ await navigator.clipboard.writeText(text); ok.textContent="Copied. Paste it in WhatsApp."; }
+  catch(e){ window.prompt("Copy this list:",text); ok.textContent=""; }
+  setTimeout(()=>ok.textContent="",4000);
+});
+document.getElementById("clear").addEventListener("click",()=>{ kept.clear(); notes={}; document.querySelectorAll(".notebox").forEach(t=>t.value=""); save(); render(); });
+render();
+const h=(location.hash||"").slice(1); if(["prizes","workshops","platform","decide"].includes(h)) showPanel(h); else document.getElementById("shortlist").classList.add("on");
+</script>
+</body>
+</html>
