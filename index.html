@@ -116,16 +116,24 @@ details.cap li{margin:7px 0}
 .phases{padding-left:22px;font-size:14.5px;margin:0 0 22px}
 .phases li{margin:6px 0}
 .phases b{font-weight:700}
+.spec{border:1px solid var(--gold);background:var(--gold-soft);border-radius:10px;padding:14px 16px;margin:0 0 24px}
+.spec h3{font-size:18px;margin-bottom:4px}
+.spec p{font-size:14.5px;color:var(--ink-2);margin-bottom:12px;max-width:60ch}
+.spec .btns{display:flex;gap:10px;flex-wrap:wrap}
+.spec a{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:8px;font-weight:700;font-size:14.5px;text-decoration:none}
+.spec a.primary{background:var(--green);color:#fff}
+.spec a.secondary{border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.spec a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 footer{color:var(--ink-2);font-size:13px;padding:10px 0 0}
 
 @media (min-width:900px){
-  body{display:grid;grid-template-columns:220px 1fr}
-  .nav{position:sticky;top:env(safe-area-inset-top,0px);bottom:auto;left:auto;right:auto;align-self:start;height:100vh;border-top:0;border-right:1px solid var(--line);padding:28px 16px 0}
+  body{height:auto;min-height:100vh}
+  .nav{position:fixed;top:0;bottom:0;left:0;right:auto;width:220px;height:auto;overflow-y:auto;border-top:0;border-right:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 28px) 16px 24px}
   .nav .inner{display:block;max-width:none}
   .tab{display:block;width:100%;text-align:left;border-top:0;border-left:3px solid transparent;padding:10px 12px;font-size:15px;min-height:0;border-radius:0 6px 6px 0}
   .tab[aria-selected="true"]{background:var(--sel)}
-  .main-col{min-width:0}
-  .wrap{max-width:760px;padding:0 40px}
+  .main-col{margin-left:220px;min-width:0}
+  .wrap{max-width:760px;margin:0 0 0 clamp(24px,5vw,80px);padding:0 32px 0 0}
   .panel{padding:40px 0 60px}
   .shortlist{position:static;margin:28px 0 0;max-width:none;box-shadow:none;flex-wrap:wrap}
   .shortlist .ok{position:static;color:var(--gold);width:100%;order:9}
@@ -187,6 +195,15 @@ footer{color:var(--ink-2);font-size:13px;padding:10px 0 0}
 <section class="panel" id="p-platform" role="tabpanel">
   <h2>Platform</h2>
   <p class="lede">One web app runs the whole hackathon: information, submissions, live judging and awards. It's hosted on Railway for roughly $10–30 in total. Tap a section to see what each person can do.</p>
+
+  <div class="spec">
+    <h3>Build it yourself</h3>
+    <p>The full technical spec: data model, judging math, security, Railway setup, environment variables, tests and milestones. Everything a developer needs to build, test and deploy the platform.</p>
+    <div class="btns">
+      <a class="primary" href="https://mumarj.github.io/mc2-summit-2026-plan/Hackathon_Platform_Spec_v1.1.md" download="Hackathon_Platform_Spec_v1.1.md">Download spec (.md)</a>
+      <a class="secondary" href="https://github.com/MUmarJ/mc2-summit-2026-plan/blob/master/Hackathon_Platform_Spec_v1.1.md" target="_blank" rel="noopener">Read it on GitHub</a>
+    </div>
+  </div>
 
   <div class="block"><h3>How the weekend moves through the app</h3>
   <ol class="phases">
